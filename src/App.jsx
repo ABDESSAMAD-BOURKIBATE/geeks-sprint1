@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import React, { useState, Suspense } from 'react';
+import { createBrowserRouter, RouterProvider, Outlet, Navigate, useOutletContext } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Login from './components/Auth/Login';
 import HowItWorks from './components/sections/HowItWorks';
@@ -8,18 +8,23 @@ import TopDestinations from './components/sections/TopDestinations';
 import Benefits from './components/sections/Benefits';
 import Footer from './components/sections/Footer';
 import MoroccoTravelBlog from './components/sections/UserReviews';
-import AllBlogs from './components/sections/AllBlogs';
-import BlogsPage from './pages/BlogsPage';
-import AboutPage from './pages/AboutPage';
-import ContactPage from './pages/ContactPage';
 import { AuthProvider, useAuth } from './context/AuthContext';
+
+// Lazy load the pages
+const BlogsPage = React.lazy(() => import('./pages/BlogsPage'));
+const AboutPage = React.lazy(() => import('./pages/AboutPage'));
+const ContactPage = React.lazy(() => import('./pages/ContactPage'));
 
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
   
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
   }
   
   if (!isAuthenticated) {
@@ -29,7 +34,8 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-function AppContent() {
+// Layout component to keep Navbar, Footer, and Modal
+function Layout() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const { isAuthenticated, logout } = useAuth();
 
@@ -42,35 +48,23 @@ function AppContent() {
   };
 
   return (
-    <div className="App">
+    <div className="App flex flex-col min-h-screen">
       <Navbar 
         onLoginClick={handleLoginClick} 
         isAuthenticated={isAuthenticated}
         onLogout={logout}
       />
 
-      <Routes>
-        <Route 
-          path="/blogs" 
-          element={
-            <ProtectedRoute>
-              <BlogsPage />
-            </ProtectedRoute>
-          } 
-        />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/" element={
-          <main className="pt-0">
-            <HeroSection onLoginClick={handleLoginClick} />
-            <TopDestinations />
-            <HowItWorks />
-            <MoroccoTravelBlog />
-            <Benefits />
-            <Footer />
-          </main>
-        } />
-      </Routes>
+      {/* Main content with flex-grow */}
+      <div className="flex-grow">
+        <Suspense fallback={
+          <div className="flex justify-center items-center min-h-screen">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        }>
+          <Outlet context={{ handleLoginClick }} />
+        </Suspense>
+      </div>
 
       {/* Login Modal */}
       {isLoginOpen && (
@@ -89,10 +83,69 @@ function AppContent() {
   );
 }
 
+// Home Component separated for the index route
+function Home() {
+  const { handleLoginClick } = useOutletContext();
+  return (
+    <main className="pt-0">
+      <HeroSection onLoginClick={handleLoginClick} />
+      <TopDestinations />
+      <HowItWorks />
+      <MoroccoTravelBlog />
+      <Benefits />
+      <Footer />
+    </main>
+  );
+}
+
+// Error Boundary
+function ErrorBoundary() {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen text-center p-4">
+      <h1 className="text-5xl font-bold mb-4 text-gray-800">404</h1>
+      <p className="text-xl text-gray-600 mb-8">Oops! The page you are looking for doesn't exist.</p>
+      <a href="/" className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+        Go Back Home
+      </a>
+    </div>
+  );
+}
+
+// Advanced Router Setup
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    errorElement: <ErrorBoundary />,
+    children: [
+      {
+        index: true,
+        element: <Home />
+      },
+      {
+        path: "about",
+        element: <AboutPage />
+      },
+      {
+        path: "contact",
+        element: <ContactPage />
+      },
+      {
+        path: "blogs",
+        element: (
+          <ProtectedRoute>
+            <BlogsPage />
+          </ProtectedRoute>
+        )
+      }
+    ]
+  }
+]);
+
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <RouterProvider router={router} />
     </AuthProvider>
   );
 }

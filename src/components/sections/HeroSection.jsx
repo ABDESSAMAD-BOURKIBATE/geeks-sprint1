@@ -3,8 +3,11 @@ import { Users, Star, MapPin, ChevronRight } from 'lucide-react';
 
 const HeroSection = ({ onLoginClick }) => {
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 overflow-hidden">
-      <div className="absolute inset-0 bg-black/20"></div>
+    <section 
+      className="relative min-h-screen bg-cover bg-center bg-no-repeat overflow-hidden"
+      style={{ backgroundImage: "url('/trip.png')" }}
+    >
+      <div className="absolute inset-0 bg-black/50"></div>
       <div className="absolute inset-0">
         <div className="absolute top-20 left-20 w-32 h-32 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-40 right-32 w-24 h-24 bg-purple-300/20 rounded-full blur-2xl animate-pulse delay-700"></div>

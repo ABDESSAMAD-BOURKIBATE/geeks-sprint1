@@ -1,16 +1,8 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, X } from 'lucide-react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-
-// Create axios instance with base URL
-const api = axios.create({
-  baseURL: 'https://geeks-backend-production.up.railway.app/api', // Update this with your backend URL
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+import { authService } from '../../services/api';
 
 const Login = ({ onClose }) => {
   const navigate = useNavigate();
@@ -41,10 +33,7 @@ const Login = ({ onClose }) => {
     try {
       if (isLogin) {
         // Login request
-        const response = await api.post('/auth/login', {
-          email: formData.email,
-          password: formData.password,
-        });
+        const response = await authService.login(formData.email, formData.password);
         
         // Use the auth context to login
         login(response.data);
@@ -52,11 +41,7 @@ const Login = ({ onClose }) => {
         navigate('/blogs'); // Navigate to blogs page
       } else {
         // Signup request
-        await api.post('/auth/register', {
-          username: formData.name,
-          email: formData.email,
-          password: formData.password,
-        });
+        await authService.register(formData.name, formData.email, formData.password);
         
         // After successful registration, switch to login
         setIsLogin(true);

@@ -1,20 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
-
-const api = axios.create({
-  baseURL: 'https://geeks-backend-production.up.railway.app/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+import { usePosts } from '../hooks/usePosts';
+import { formatDate } from '../utils/formatDate';
 
 const BlogsPage = () => {
   const { isAuthenticated, loading: authLoading, user } = useAuth();
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { posts, loading, error, setError, addComment, likePost, createPost } = usePosts(isAuthenticated, user);
+  
   const [newComment, setNewComment] = useState('');
   const [activeCommentId, setActiveCommentId] = useState(null);
   const [activeSorting, setActiveSorting] = useState('newest');
@@ -27,36 +20,6 @@ const BlogsPage = () => {
     tags: ''
   });
   const [posting, setPosting] = useState(false);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await api.get('/posts');
-        if (response.data.success) {
-          setPosts(response.data.data);
-        } else {
-          setError('Failed to fetch posts');
-        }
-      } catch (err) {
-        setError('Failed to fetch posts. Please try again later.');
-        console.error('Error fetching posts:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (isAuthenticated) {
-      fetchPosts();
-    }
-  }, [isAuthenticated]);
-
-  // Add auth token to requests
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    }
-  }, []);
 
   if (authLoading) {
     return (
@@ -93,39 +56,22 @@ const BlogsPage = () => {
     if (!newComment.trim()) return;
 
     try {
-      const response = await api.post(`/posts/${postId}/comments`, {
-        content: newComment
-      });
-
-      if (response.data.success) {
-        setPosts(posts.map(post => 
-          post._id === postId 
-            ? { ...post, comments: [...post.comments, response.data.data] }
-            : post
-        ));
+      const success = await addComment(postId, newComment);
+      if (success) {
         setNewComment('');
         setActiveCommentId(null);
       }
     } catch (err) {
-      console.error('Error posting comment:', err);
-      setError('Failed to post comment. Please try again.');
+      setError(err.message);
     }
   };
 
   // Handle like submission
   const handleLike = async (postId) => {
     try {
-      const response = await api.post(`/posts/${postId}/like`);
-      if (response.data.success) {
-        setPosts(posts.map(post => 
-          post._id === postId 
-            ? { ...post, likes: [...post.likes, user._id] }
-            : post
-        ));
-      }
+      await likePost(postId);
     } catch (err) {
-      console.error('Error liking post:', err);
-      setError('Failed to like post. Please try again.');
+      setError(err.message);
     }
   };
 
@@ -154,20 +100,18 @@ const BlogsPage = () => {
         .map(tag => tag.trim())
         .filter(tag => tag.length > 0);
 
-      const response = await api.post('/posts', {
+      const success = await createPost({
         title: newPost.title,
         content: newPost.content,
         tags: tagsArray
       });
 
-      if (response.data.success) {
-        setPosts([response.data.data, ...posts]);
+      if (success) {
         setNewPost({ title: '', content: '', tags: '' });
         setShowNewPostForm(false);
       }
     } catch (err) {
-      console.error('Error creating post:', err);
-      setError('Failed to create post. Please try again.');
+      setError(err.message);
     } finally {
       setPosting(false);
     }
@@ -325,11 +269,7 @@ const BlogsPage = () => {
                   <div>
                     <p className="font-medium text-indigo-700">{post.author.username}</p>
                     <p className="text-gray-500 text-xs">
-                      {new Date(post.createdAt).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
+                      {formatDate(post.createdAt)}
                     </p>
                   </div>
                 </div>
@@ -424,7 +364,7 @@ const BlogsPage = () => {
                               </div>
                               <span className="font-medium mr-2 text-gray-800">{comment.author.username}</span>
                               <span className="text-gray-500 text-sm">
-                                {new Date(comment.createdAt).toLocaleDateString()}
+                                {formatDate(comment.createdAt)}
                               </span>
                             </div>
                             <p className="text-gray-800">{comment.content}</p>
