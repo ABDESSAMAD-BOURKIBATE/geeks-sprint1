@@ -1,5 +1,11 @@
 <div align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Flag_of_Morocco.svg" alt="Morocco Flag" width="100"/>
+  <div style="display: flex; justify-content: center; gap: 20px; align-items: center; margin-bottom: 20px;">
+    <a href="https://www.geeks.institute/" target="_blank">
+      <img src="https://media.licdn.com/dms/image/v2/D4E0BAQG5k9eJd0fO2g/company-logo_200_200/company-logo_200_200/0/1709144865768?e=1748217600&v=beta&t=H-3m5vL0_5K0c5vM5h1b5yM1A1Gg42h9Ff9q5W9m9Kk" alt="Geeks Institute Logo" width="100"/>
+    </a>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Flag_of_Morocco.svg" alt="Morocco Flag" width="100"/>
+    <img src="./public/logo.png" alt="Project Logo" width="100"/>
+  </div>
   <h1>Morocco Travel App 🇲🇦</h1>
   <h3>🏆 Winning Project - Geeks Institute Hackathon / Projet Gagnant - Hackathon Geeks Institute</h3>
   <p><i>English below / Français plus bas</i></p>
