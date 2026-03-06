@@ -1,10 +1,10 @@
 <div align="center">
-  <div style="display: flex; justify-content: center; gap: 20px; align-items: center; margin-bottom: 20px;">
+  <div style="display: flex; justify-content: center; gap: 40px; align-items: center; margin-bottom: 20px;">
     <a href="https://www.geeks.institute/" target="_blank">
-      <img src="./public/download.jpg" alt="Geeks Institute Logo" width="100"/>
+      <img src="./public/download.jpg" alt="Geeks Institute Logo" width="120"/>
     </a>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Flag_of_Morocco.svg" alt="Morocco Flag" width="100"/>
-    <img src="./public/logo.png" alt="Project Logo" width="100"/>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Flag_of_Morocco.svg" alt="Morocco Flag" width="80"/>
+    <img src="./public/logo.png" alt="Project Logo" width="180"/>
   </div>
   <h1>Morocco Travel App 🇲🇦</h1>
   <h3>🏆 Winning Project - Geeks Institute Hackathon / Projet Gagnant - Hackathon Geeks Institute</h3>
