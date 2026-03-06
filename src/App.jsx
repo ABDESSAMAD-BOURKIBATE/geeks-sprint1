@@ -1,5 +1,5 @@
 import React, { useState, Suspense } from 'react';
-import { createBrowserRouter, RouterProvider, Outlet, Navigate, useOutletContext } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet, Navigate, useOutletContext, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Login from './components/Auth/Login';
 import HowItWorks from './components/sections/HowItWorks';
@@ -99,14 +99,15 @@ function Home() {
 }
 
 // Error Boundary
+
 function ErrorBoundary() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-center p-4">
       <h1 className="text-5xl font-bold mb-4 text-gray-800">404</h1>
       <p className="text-xl text-gray-600 mb-8">Oops! The page you are looking for doesn't exist.</p>
-      <a href="/" className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+      <Link to="/" className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
         Go Back Home
-      </a>
+      </Link>
     </div>
   );
 }
@@ -140,7 +141,9 @@ const router = createBrowserRouter([
       }
     ]
   }
-]);
+], {
+  basename: "/geeks-sprint1"
+});
 
 function App() {
   return (
