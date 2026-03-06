@@ -1,11 +1,12 @@
 import React from 'react';
 import { Users, Star, MapPin, ChevronRight } from 'lucide-react';
+import tripBg from '../../../public/trip.png';
 
 const HeroSection = ({ onLoginClick }) => {
   return (
     <section 
       className="relative min-h-screen bg-cover bg-center bg-no-repeat overflow-hidden"
-      style={{ backgroundImage: "url('/trip.png')" }}
+      style={{ backgroundImage: `url(${tripBg})` }}
     >
       <div className="absolute inset-0 bg-black/50"></div>
       <div className="absolute inset-0">

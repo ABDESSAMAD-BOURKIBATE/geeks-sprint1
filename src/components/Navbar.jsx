@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import logo from '../../public/logo.png';
 
 const Navbar = ({ onLoginClick, isAuthenticated, onLogout }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,10 +12,8 @@ const Navbar = ({ onLoginClick, isAuthenticated, onLogout }) => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link to="/" className="text-xl font-bold text-indigo-600">
-            <a href="/">
-              <img src="./logo.png" alt="TripReview Logo" className="h-14 mb-1" />
-            </a>
+            <Link to="/" className="flex items-center">
+              <img src={logo} alt="TripReview Logo" className="h-14 mb-1" />
             </Link>
           </div>
 
