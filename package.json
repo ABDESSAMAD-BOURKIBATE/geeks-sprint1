@@ -1,13 +1,16 @@
 {
   "name": "my-react-app",
   "private": true,
+  "homepage": "https://ABDESSAMAD-BOURKIBATE.github.io/geeks-sprint1",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -27,6 +30,7 @@
     "eslint": "^8.56.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "gh-pages": "^6.3.0",
     "globals": "^13.24.0",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
